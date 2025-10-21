@@ -1,2 +1,2 @@
-# Пакет src для проекта geo
-__version__ = "0.0.0"
+"""Geological Forecaster package."""
+__version__ = "0.1.0"

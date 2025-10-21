@@ -1,5 +1,32 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+.venv/
+
+# Data files
+data/*.shp
+data/*.shx
+data/*.dbf
+data/*.prj
+data/*.geojson
+data/*.csv
+
+# Output files
+output*/
+output_homestake/
+output_homestake_mine/
+output_homestake_synthetic/
+output_homestake_wms/
+
+# Environment
 .env
-.vscode/.history
+*.env
+
+# IDE
+.vscode/
+.idea/
