@@ -1,0 +1,76 @@
+{
+  "@type": "Dataset",
+  "identifier": "10.1038/s41597-020-00624-w",
+  "title": "Metadata record for: A global-scale data set of mining areas",
+  "relatedPublications": [],
+  "repositories": [
+    {
+      "name": "PANGAEA",
+      "value": "https://doi.org/10.1594/PANGAEA.910894",
+      "@type": "DataCatalog"
+    },
+    {
+      "name": "Zenodo",
+      "value": "https://doi.org/10.5281/zenodo.3691743",
+      "@type": "DataCatalog"
+    }
+  ],
+  "assays": [
+    {
+      "measurementType": {
+        "annotationValue": "terrestrial mining",
+        "termAccession": "http://purl.obolibrary.org/obo/ENVO_01001433",
+        "termSource": "ENVO",
+        "@type": "PropertyValue"
+      },
+      "technologyType": {
+        "annotationValue": "satellite imaging",
+        "termAccession": "http://purl.obolibrary.org/obo/ENVO_01001492",
+        "termSource": "ENVO",
+        "@type": "PropertyValue"
+      },
+      "@type": "variableMeasured"
+    }
+  ],
+  "factors": [],
+  "studyCharacteristics": {
+    "organism": [],
+    "environmentType": [
+      {
+        "annotationValue": "land",
+        "termAccession": "http://purl.obolibrary.org/obo/ENVO_01000635",
+        "termSource": "ENVO",
+        "@type": "PropertyValue"
+      }
+    ],
+    "geographicalLocation": [
+      {
+        "annotationValue": "Earth (planet)",
+        "@type": "Place"
+      }
+    ],
+    "@type": "variableMeasured"
+  },
+  "ontologySourceReferences": {
+    "ENVO": {
+      "name": "ENVO",
+      "description": "Environment Ontology",
+      "file": "http://data.bioontology.org/ontologies/ENVO",
+      "version": null,
+      "@type": "DefinedTermSet"
+    },
+    "@type": "CategoryCodeSet"
+  },
+  "comments": [
+    {
+      "name": "Created With Configuration",
+      "value": "1.0",
+      "@type": "SoftwareApplication"
+    },
+    {
+      "name": "Data Descriptor License",
+      "value": "CC-BY-4.0",
+      "@type": "CreativeWork"
+    }
+  ]
+}
