@@ -1,4 +1,4 @@
-# check_shapefile.py
+
 import geopandas as gpd
 
 gdf = gpd.read_file('data/SD-point.shp')

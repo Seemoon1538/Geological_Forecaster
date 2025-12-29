@@ -14,7 +14,7 @@ from .visualizer import Visualizer
 import geopandas as gpd
 import numpy as np
 
-# Set up logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 def main():
@@ -28,7 +28,7 @@ def main():
     parser.add_argument("--min-samples", type=int, default=2, help="DBSCAN min samples per cluster")
     args = parser.parse_args()
 
-    # Config
+    
     config_dict = {
         "input_path": args.input,
         "output_dir": args.output,
@@ -43,7 +43,7 @@ def main():
     config = Config.from_dict(config_dict)
     Path(config.output_dir).mkdir(exist_ok=True)
 
-    # Load data
+   
     if args.input.endswith(('.csv', '.txt')):
         df = DataLoader.load_data(config.input_path, normalize=False)
         gdf = DataLoader.to_geodataframe(df, crs=config.crs)
@@ -52,17 +52,17 @@ def main():
         gdf, raster = load_gis_data(config.input_path, wms_layer=config.wms_layer, bbox=config.bbox)
         if gdf.empty and raster:
             logger.warning("No vector data loaded from WMS, only raster available")
-            # Optionally load points from CSV for WMS background
+            
             if config.input_path.startswith(('http', 'https')):
                 logger.info("Loading points from CSV for WMS")
                 df = DataLoader.load_data('data/drill_points.csv', normalize=False)
                 gdf = DataLoader.to_geodataframe(df, crs=config.crs)
 
-    # Validate GeoDataFrame
+    
     if gdf.empty:
         raise ValueError("No valid data loaded for forecasting")
 
-    # Forecast
+  
     forecaster = Forecaster(
         eps=config.eps,
         min_samples=config.min_samples,
@@ -71,14 +71,14 @@ def main():
     )
     clusters, labels, deposit_center, deposit_ore_type = forecaster.fit_predict(gdf)
 
-    # Save JSON
+    
     json_data = forecaster.to_json(clusters, deposit_center, deposit_ore_type)
     output_json = f"{config.output_dir}/forecast.json"
     with open(output_json, "w") as f:
         json.dump(json_data, f, indent=2)
     logger.info(f"Saved {output_json} with {len(clusters)} clusters, deposit at {deposit_center}")
 
-    # Visualize
+  
     visualizer = Visualizer()
     cluster_centers = [(c.center, c.predicted_volume) for c in clusters]
     visualizer.plot_clusters(gdf[['x', 'y']].to_numpy(), labels, cluster_centers, config.output_dir)

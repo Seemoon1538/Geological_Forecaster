@@ -32,17 +32,17 @@ class Forecaster:
 
     def fit_predict(self, gdf: gpd.GeoDataFrame) -> Tuple[List[Cluster], np.ndarray, Tuple[float, float], str]:
         """Fit DBSCAN and RF, predict clusters and ore type."""
-        coords = gdf[['x', 'y']].to_numpy()  # x=lat, y=lon
+        coords = gdf[['x', 'y']].to_numpy()  
         volumes = gdf['volume'].to_numpy()
         ore_types = gdf['ore_type'].astype(str).to_numpy()
 
-        # Fit DBSCAN
+        
         labels = self.dbscan.fit_predict(coords)
         logger.info(f"DBSCAN labels: {labels}")
         n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
         logger.info(f"Found {n_clusters} clusters")
 
-        # Fit RF classifier
+        
         self.label_encoder.fit(ore_types)
         encoded_ore_types = self.label_encoder.transform(ore_types)
         self.rf_classifier.fit(coords, encoded_ore_types)
@@ -52,12 +52,12 @@ class Forecaster:
             mask = labels == label
             cluster_points = coords[mask]
             if len(cluster_points) > 0:
-                center = tuple(np.mean(cluster_points, axis=0))  # (lat, lon)
+                center = tuple(np.mean(cluster_points, axis=0)) 
                 pred_volume = np.sum(volumes[mask])
                 clusters.append(Cluster(center=center, points=cluster_points, predicted_volume=pred_volume))
                 logger.debug(f"Cluster {label}: center={center}, volume={pred_volume}")
 
-        # Deposit center and ore type
+        
         if clusters:
             max_volume_cluster = max(clusters, key=lambda c: c.predicted_volume)
             deposit_center = max_volume_cluster.center
@@ -69,7 +69,7 @@ class Forecaster:
             deposit_center = (float(gdf['x'].mean()), float(gdf['y'].mean())) if not gdf.empty else (0.0, 0.0)
             deposit_ore_type = "unknown"
 
-        # Fit interpolator
+       
         self.interpolator = RBFInterpolator(coords, volumes, kernel=self.rbf_kernel)
 
         logger.debug(f"Deposit center: {deposit_center}, ore_type: {deposit_ore_type}")
@@ -80,12 +80,12 @@ class Forecaster:
         json_data = {
             "clusters": [
                 {
-                    "center": [float(c.center[1]), float(c.center[0])],  # lon, lat
-                    "points": [[float(p[1]), float(p[0])] for p in c.points.tolist()],  # lon, lat
+                    "center": [float(c.center[1]), float(c.center[0])], 
+                    "points": [[float(p[1]), float(p[0])] for p in c.points.tolist()],  
                     "predicted_volume": float(c.predicted_volume)
                 } for c in clusters
             ],
-            "deposit_center": [float(deposit_center[1]), float(deposit_center[0])],  # lon, lat
+            "deposit_center": [float(deposit_center[1]), float(deposit_center[0])],  
             "deposit_ore_type": deposit_ore_type,
             "predicted_total_volume": float(sum(c.predicted_volume for c in clusters))
         }

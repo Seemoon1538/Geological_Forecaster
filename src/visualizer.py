@@ -82,23 +82,23 @@ class Visualizer:
             logger.error("No data or clusters to plot on map")
             return
         
-        # Log coordinates for debugging
+        
         logger.debug(f"GeoDataFrame coords: x_mean={gdf['x'].mean()}, y_mean={gdf['y'].mean()}")
         logger.debug(f"Deposit center: {json_data['deposit_center']}")
 
-        # Initialize map at mean coordinates or deposit center
+        
         if gdf.empty:
-            center = [json_data['deposit_center'][1], json_data['deposit_center'][0]]  # lat,lon
+            center = [json_data['deposit_center'][1], json_data['deposit_center'][0]]  
         else:
-            center = [gdf['x'].mean(), gdf['y'].mean()]  # lat,lon
+            center = [gdf['x'].mean(), gdf['y'].mean()]  
         logger.debug(f"Map center: {center}")
         m = folium.Map(location=center, zoom_start=12, tiles='OpenStreetMap')
 
-        # Add points
+       
         for _, row in gdf.iterrows():
             logger.debug(f"Point: [lat={row['x']}, lon={row['y']}]")
             folium.CircleMarker(
-                [row['x'], row['y']],  # lat,lon
+                [row['x'], row['y']],  
                 radius=5,
                 popup=f"Volume: {row['volume']:.2f}, Type: {row['ore_type']}",
                 color='blue',
@@ -106,7 +106,7 @@ class Visualizer:
                 fill_opacity=0.6
             ).add_to(m)
 
-        # Add deposit center
+        
         logger.debug(f"Deposit marker: [lat={json_data['deposit_center'][1]}, lon={json_data['deposit_center'][0]}]")
         folium.Marker(
             [json_data['deposit_center'][1], json_data['deposit_center'][0]],  # lat,lon
@@ -114,12 +114,12 @@ class Visualizer:
             icon=folium.Icon(color='red', icon='star')
         ).add_to(m)
 
-        # Add WMS raster
+        
         if raster:
             with rasterio.open(raster) as dataset:
-                img_array = dataset.read(1)  # Read first band
-                bounds = dataset.bounds  # (minx, miny, maxx, maxy)
-                img_bounds = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]  # [[miny, minx], [maxy, maxx]]
+                img_array = dataset.read(1)  
+                bounds = dataset.bounds 
+                img_bounds = [[bounds.bottom, bounds.left], [bounds.top, bounds.right]]  
                 ImageOverlay(
                     image=img_array,
                     bounds=img_bounds,

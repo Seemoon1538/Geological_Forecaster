@@ -14,8 +14,8 @@ class DataLoader:
     """Handles loading and cleaning of geological data."""
 
     SCHEMA = DataFrameSchema({
-        "x": Column(float, nullable=False),  # Latitude
-        "y": Column(float, nullable=False),  # Longitude
+        "x": Column(float, nullable=False),  
+        "y": Column(float, nullable=False),  
         "volume": Column(float, Check.gt(0), nullable=False),
         "ore_type": Column(str, nullable=False)
     })
@@ -45,7 +45,7 @@ class DataLoader:
             logger.error(f"Error loading {input_path}: {e}")
             raise
 
-        # Clean: dropna, outliers (Z-score > 3 for volume only)
+        
         df = df.dropna()
         if df.empty:
             logger.error("DataFrame is empty after dropna")
@@ -55,14 +55,14 @@ class DataLoader:
         df = df[z_scores < 3]
         logger.info(f"After cleaning: {len(df)} rows")
 
-        # Validate schema
+        
         try:
             validated_df: pd.DataFrame = cls.SCHEMA.validate(df)
         except Exception as e:
             logger.error(f"Schema validation failed: {e}")
             raise ValueError("Data does not match schema: volume > 0, ore_type str")
 
-        # Normalize x,y to [0,1] only if requested
+        
         if normalize:
             validated_df['x'] = (validated_df['x'] - validated_df['x'].min()) / (validated_df['x'].max() - validated_df['x'].min())
             validated_df['y'] = (validated_df['y'] - validated_df['y'].min()) / (validated_df['y'].max() - validated_df['y'].min())
@@ -83,7 +83,7 @@ class DataLoader:
         """
         gdf = gpd.GeoDataFrame(
             df,
-            geometry=gpd.points_from_xy(df['y'], df['x']),  # lon,lat
+            geometry=gpd.points_from_xy(df['y'], df['x']), 
             crs=crs
         )
         logger.debug(f"GeoDataFrame created: CRS={gdf.crs}, bounds={gdf.total_bounds}")
@@ -99,6 +99,6 @@ class DataLoader:
         Returns:
             Tuple of (coords, volumes) as numpy arrays.
         """
-        coords = df[['x', 'y']].to_numpy()  # lat,lon
+        coords = df[['x', 'y']].to_numpy()  
         volumes = df['volume'].to_numpy()
         return coords, volumes
